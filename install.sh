@@ -30,6 +30,18 @@ function findCurrentOSType()
 
 echo $CURRENT_OS
 
+case $CURRENT_OS in
+  "OSX")
+    brew tap thoughtbot/formulae
+    brew install rcm
+    ;;
+  "Ubuntu")
+    sudo add-apt-repository ppa:martin-frost/thoughtbot-rcm
+    sudo apt-get update
+    sudo apt-get install -y rcm
+    ;;
+esac
+
 # Pre-condition:
 # 1. zsh is installed
 chsh -s $(which zsh)
