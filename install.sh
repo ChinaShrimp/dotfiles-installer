@@ -1,5 +1,9 @@
-CURRENT_OS="OSX" #CENTOS, UBUNUTU are other valid options
-function findCurrentOSType()
+## Pre-condition:
+# 1. zsh is installed
+# 2. gawk is installed
+chsh -s $(which zsh)
+
+findCurrentOSType()
 {
     echo "Finding the current os type"
     echo
@@ -28,23 +32,22 @@ function findCurrentOSType()
     esac
 }
 
-echo $CURRENT_OS
+findCurrentOSType
 
-case $CURRENT_OS in
-  "OSX")
+case "$CURRENT_OS" in
+  OSX)
     brew tap thoughtbot/formulae
     brew install rcm
     ;;
-  "Ubuntu")
-    sudo add-apt-repository ppa:martin-frost/thoughtbot-rcm
+  *UBUNTU*)
+    sudo add-apt-repository -y ppa:martin-frost/thoughtbot-rcm
     sudo apt-get update
     sudo apt-get install -y rcm
     ;;
+  *)
+    echo "Unsupported OS: $CURRENT_OS"
+    exit 0
 esac
-
-# Pre-condition:
-# 1. zsh is installed
-chsh -s $(which zsh)
 
 # install dotfiles
 if [ -d ~/dotfiles ]; then
@@ -59,5 +62,7 @@ cp -r dotfiles-local ~
 
 # install oh-my-zsh
 cp -r zsh ~/dotfiles-local/
-export ZSH=~/dotfiles-local/zsh/oh-my-zsh/
+export ZSH=$HOME/dotfiles-local/zsh/oh-my-zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+env RCRC=$HOME/dotfiles/rcrc rcup
