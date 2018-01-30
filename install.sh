@@ -63,6 +63,5 @@ cp -r dotfiles-local ~
 # install oh-my-zsh
 cp -r zsh ~/dotfiles-local/
 export ZSH=$HOME/dotfiles-local/zsh/oh-my-zsh
+echo "Installation complete, pls run: env RCRC=$HOME/dotfiles/rcrc rcup -f"
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-
-env RCRC=$HOME/dotfiles/rcrc sudo rcup -f
