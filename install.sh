@@ -1,8 +1,13 @@
 ## Pre-condition:
-# 1. zsh is installed
-# 2. gawk is installed
+# Pls. make sure following software is installed before running this script:
+# 1. zsh
+# 2. gawk
+# 3. git
+
+# use zsh
 chsh -s $(which zsh)
 
+# install rcm
 findCurrentOSType()
 {
     echo "Finding the current os type"
@@ -49,6 +54,14 @@ case "$CURRENT_OS" in
     exit 0
 esac
 
+# install pyenv
+echo "Installing pyenv..."
+if [ -d ~/.pyenv ]; then
+  sudo rm -rf ~/.pyenv
+fi
+git clone https://github.com/pyenv/pyenv.git $HOME/.pyenv
+git clone https://github.com/pyenv/pyenv-virtualenv.git $HOME/.pyenv/plugins/pyenv-virtualenv
+
 # install dotfiles
 if [ -d ~/dotfiles ]; then
   rm -rf ~/dotfiles
@@ -59,6 +72,20 @@ if [ -d ~/dotfiles-local ]; then
   rm -rf ~/dotfiles-local
 fi
 cp -r dotfiles-local ~
+
+# alias
+CFLAGS="-I$(brew --prefix readline)/include -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
+LDFLAGS="-L$(brew --prefix readline)/lib -L$(brew --prefix openssl)/lib"
+PYTHON_CONFIGURE_OPTS="--enable-unicode=ucs2"
+
+if [ 'OSX' = "$CURRENT_OS" ]; then
+  echo "osx writing alias..."
+  cat >> $HOME/dotfiles-local/aliases.local << EOF
+alias pyenv='CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" PYTHON_CONFIGURE_OPTS="$PYTHON_CONFIGURE_OPTS" pyenv'
+EOF
+else
+  echo "not osx"
+fi
 
 # install oh-my-zsh
 cp -r zsh ~/dotfiles-local/
